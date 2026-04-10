@@ -2,33 +2,39 @@
 
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Loan Inquiry Form Jaipur</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f4f4;
-        }
-        .form-container {
-            width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-        }
-        button {
-            background: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            width: 100%;
-        }
-    </style>
+
+```
+<style>
+    body {
+        font-family: Arial;
+        background: #f4f4f4;
+    }
+    .form-container {
+        width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+    }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+    }
+    button {
+        background: #28a745;
+        color: white;
+        padding: 10px;
+        border: none;
+        width: 100%;
+    }
+</style>
+```
+
 </head>
+
 <body>
 
 <div class="form-container">
@@ -38,12 +44,12 @@
 <form action="submit.php" method="POST">
 
     <input name="FullName" placeholder="Full Name" required>
-    <input name="PhoneNumber" placeholder="Phone Number" required>
-    <input name="Email" placeholder="Email" required>
+    <input name="PhoneNumber" type="tel" placeholder="Phone Number" required>
+    <input name="Email" type="email" placeholder="Email" required>
     <input name="AddressLine" placeholder="Address" required>
     <input name="City" placeholder="City" required>
     <input name="State" placeholder="State" required>
-    <input name="Pincode" placeholder="Pincode" required>
+    <input name="Pincode" type="number" placeholder="Pincode" required>
 
     <select name="LoanType">
         <option>Home Loan</option>
@@ -51,12 +57,12 @@
         <option>Personal Loan</option>
     </select>
 
-  <input name="LoanAmount" type="number" required>
-   <input name="TenureMonths" type="number" required>
+    <input name="LoanAmount" type="number" placeholder="Loan Amount" required>
+    <input name="TenureMonths" type="number" placeholder="Tenure (months)" required>
     <input name="EmploymentType" placeholder="Employment Type" required>
     <input name="CompanyName" placeholder="Company Name" required>
-    <input name="MonthlyIncome" type="number" required>
-    <input name="AadhaarNumber" placeholder="Aadhaar Number" required>
+    <input name="MonthlyIncome" type="number" placeholder="Monthly Income" required>
+    <input name="AadhaarNumber" type="number" placeholder="Aadhaar Number" required>
     <input name="PANNumber" placeholder="PAN Number" required>
 
     <button type="submit">Submit</button>
