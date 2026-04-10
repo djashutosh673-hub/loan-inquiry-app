@@ -6,7 +6,7 @@ $connectionOptions = [
     "Database" => "Cosmos_Stamp",
     "Uid" => "cosmos",
     "PWD" => "4321aeiou",
-    "Encrypt" => true,
+    "Encrypt" => false,
     "TrustServerCertificate" => true
 ];
 
