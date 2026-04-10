@@ -5,7 +5,7 @@ $serverName = "cosmosrds.cnoo4wwa6kfo.ap-south-1.rds.amazonaws.com";
 $connectionOptions = [
     "Database" => "Cosmos_Stamp",
     "Uid" => "cosmos",
-    "PWD" => "1234",
+    "PWD" => "4321aeiou",
     "Encrypt" => false,               // Disable SSL (easiest fix)
     "TrustServerCertificate" => true  // Optional, but safe to keep
 ];
