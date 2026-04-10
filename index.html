@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan Inquiry</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+        .form-container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Loan Inquiry</h2>
+    <form action="insert.php" method="POST">
+        <input name="FullName" placeholder="Full Name" required>
+        <input name="PhoneNumber" placeholder="Phone Number" required>
+        <input name="Email" placeholder="Email" required>
+        <input name="AddressLine" placeholder="Address" required>
+        <input name="City" placeholder="City" required>
+        <input name="State" placeholder="State" required>
+        <input name="Pincode" placeholder="Pincode" required>
+
+        <select name="LoanType">
+            <option>Home Loan</option>
+            <option>Car Loan</option>
+            <option>Personal Loan</option>
+        </select>
+
+        <input name="LoanAmount" placeholder="Loan Amount" required>
+        <input name="TenureMonths" placeholder="Tenure (months)" required>
+        <input name="EmploymentType" placeholder="Employment Type" required>
+        <input name="CompanyName" placeholder="Company Name" required>
+        <input name="MonthlyIncome" placeholder="Monthly Income" required>
+        <input name="AadhaarNumber" placeholder="Aadhaar Number" required>
+        <input name="PANNumber" placeholder="PAN Number" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>
