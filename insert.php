@@ -1,22 +1,22 @@
 <?php
 $serverName = "cosmosrds.cnoo4wwa6kfo.ap-south-1.rds.amazonaws.com";
 
-// Connection options – FIXED SSL ERROR
+// ✅ CRITICAL FIX: Disable SSL encryption to avoid certificate error
 $connectionOptions = [
     "Database" => "Cosmos_Stamp",
     "Uid" => "cosmos",
     "PWD" => "4321aeiou",
-    "Encrypt" => false,               // Disable SSL (easiest fix)
-    "TrustServerCertificate" => true  // Optional, but safe to keep
+    "Encrypt" => false,              // Turns off SSL (simplest fix)
+    "TrustServerCertificate" => false
 ];
 
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
 if ($conn === false) {
-    die(print_r(sqlsrv_errors(), true));
+    die("Connection failed: <pre>" . print_r(sqlsrv_errors(), true) . "</pre>");
 }
 
-// Get form data
+// Get form data (with fallback to empty string)
 $FullName = $_POST['FullName'] ?? '';
 $PhoneNumber = $_POST['PhoneNumber'] ?? '';
 $Email = $_POST['Email'] ?? '';
@@ -47,13 +47,12 @@ $params = [
 $stmt = sqlsrv_query($conn, $sql, $params);
 
 if ($stmt) {
-    echo "Data inserted successfully!";
+    echo "✅ Data inserted successfully!";
 } else {
-    echo "Error inserting data:<br>";
+    echo "❌ Insert failed:<br>";
     die(print_r(sqlsrv_errors(), true));
 }
 
-// Close connection
 sqlsrv_free_stmt($stmt);
 sqlsrv_close($conn);
 ?>
