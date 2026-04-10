@@ -1,42 +1,38 @@
 <?php
-// Force error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $serverName = "cosmosrds.cnoo4wwa6kfo.ap-south-1.rds.amazonaws.com";
 
+// Default: use sqlsrv
+$usingPDO = false;
+
 // ============================================================
-// METHOD 1: Completely disable SSL (works for most RDS setups)
+// Try sqlsrv with SSL disabled (fixes certificate error)
 // ============================================================
 $connectionOptions = [
     "Database" => "Cosmos_Stamp",
     "Uid" => "cosmos",
-    "PWD" => "4321aeiou",
-    "Encrypt" => 0,                    // Integer 0 = no encryption
-    "TrustServerCertificate" => 1,     // Bypass cert check
+    "PWD" => "1234",
+    "Encrypt" => false,               // Disable SSL
+    "TrustServerCertificate" => true,
     "LoginTimeout" => 30
 ];
 
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
 // ============================================================
-// If METHOD 1 fails, try METHOD 2 with explicit DSN string
+// If sqlsrv fails, fall back to PDO with same settings
 // ============================================================
 if ($conn === false) {
-    // Try alternative connection string (DSN style)
-    $connectionString = "sqlsrv:Server=$serverName;Database=Cosmos_Stamp;Encrypt=0;TrustServerCertificate=1";
+    $dsn = "sqlsrv:Server=$serverName;Database=Cosmos_Stamp;Encrypt=0;TrustServerCertificate=1";
     try {
-        $conn = new PDO($connectionString, "cosmos", "1234");
+        $conn = new PDO($dsn, "cosmos", "1234");
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $usingPDO = true;
     } catch (PDOException $e) {
-        die("Both sqlsrv and PDO failed. Last error: " . print_r(sqlsrv_errors(), true) . "<br>PDO error: " . $e->getMessage());
+        die("Both sqlsrv and PDO failed.<br>sqlsrv error: " . print_r(sqlsrv_errors(), true) . "<br>PDO error: " . $e->getMessage());
     }
-}
-
-// If sqlsrv succeeded, we continue with that
-if (!$usingPDO && $conn === false) {
-    die("Connection failed: <pre>" . print_r(sqlsrv_errors(), true) . "</pre>");
 }
 
 // Get form data
@@ -76,6 +72,7 @@ if ($usingPDO) {
     } else {
         echo "❌ PDO insert failed: " . print_r($stmt->errorInfo(), true);
     }
+    $conn = null; // close PDO connection
 } else {
     $stmt = sqlsrv_query($conn, $sql, $params);
     if ($stmt) {
@@ -83,13 +80,7 @@ if ($usingPDO) {
     } else {
         echo "❌ Insert failed: <pre>" . print_r(sqlsrv_errors(), true) . "</pre>";
     }
-}
-
-// Close connections
-if (!$usingPDO) {
     sqlsrv_free_stmt($stmt);
     sqlsrv_close($conn);
-} else {
-    $conn = null;
 }
 ?>
