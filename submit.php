@@ -1,10 +1,9 @@
 <?php
 
-// SHOW ERRORS
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// DATABASE CONNECTION
+// DB CONNECTION
 $serverName = "cosmosrds.cnoo4wwa6kfo.ap-south-1.rds.amazonaws.com";
 
 $connectionOptions = [
@@ -19,10 +18,10 @@ $connectionOptions = [
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
 if (!$conn) {
-    die("❌ Connection failed: " . print_r(sqlsrv_errors(), true));
+    die("❌ Connection failed");
 }
 
-// COLLECT + TYPE SAFE DATA
+// GET FORM DATA
 $FullName = $_POST['FullName'];
 $PhoneNumber = $_POST['PhoneNumber'];
 $Email = $_POST['Email'];
@@ -39,7 +38,7 @@ $MonthlyIncome = (int)$_POST['MonthlyIncome'];
 $AadhaarNumber = $_POST['AadhaarNumber'];
 $PANNumber = $_POST['PANNumber'];
 
-// CHECK DUPLICATE AADHAAR
+// CHECK DUPLICATE
 $checkSql = "SELECT * FROM Inquiries WHERE AadhaarNumber = ?";
 $checkStmt = sqlsrv_query($conn, $checkSql, [$AadhaarNumber]);
 
@@ -47,7 +46,7 @@ if (sqlsrv_has_rows($checkStmt)) {
     die("<h2 style='color:red;text-align:center;'>❌ Aadhaar already exists!</h2>");
 }
 
-// INSERT QUERY
+// INSERT
 $sql = "INSERT INTO Inquiries
 (FullName, PhoneNumber, Email, AddressLine, City, State, Pincode, LoanType, LoanAmount, TenureMonths, EmploymentType, CompanyName, MonthlyIncome, AadhaarNumber, PANNumber)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -60,24 +59,20 @@ $params = [
 
 $stmt = sqlsrv_query($conn, $sql, $params);
 
-// RESULT
-if ($stmt) {
-
-    // GET LAST INSERTED DATA
-    $getSql = "SELECT TOP 1 * FROM Inquiries WHERE AadhaarNumber = ? ORDER BY InquiryID DESC";
-    $getStmt = sqlsrv_query($conn, $getSql, [$AadhaarNumber]);
-
-    $userData = sqlsrv_fetch_array($getStmt, SQLSRV_FETCH_ASSOC);
-
-} else {
-    echo "<h2 style='color:red;text-align:center;'>❌ Insert failed</h2>";
-    die(print_r(sqlsrv_errors(), true));
+if (!$stmt) {
+    die("❌ Insert failed");
 }
+
+// FETCH ALL DATA (LIKE ADMIN GRID)
+$getSql = "SELECT * FROM Inquiries ORDER BY InquiryID DESC";
+$getStmt = sqlsrv_query($conn, $getSql);
+
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Submitted Details</title>
+    <title>Loan Inquiries</title>
 
     <style>
         body {
@@ -85,47 +80,37 @@ if ($stmt) {
             background: #f4f4f4;
         }
 
-        .container {
-            width: 90%;
-            margin: 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
         h2 {
             text-align: center;
-            color: green;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
         }
 
-        .card {
+        th {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
             background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #28a745;
-        }
-
-        .label {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .value {
-            margin-top: 5px;
-            color: #555;
         }
 
         .btn {
             display: block;
             width: 200px;
-            margin: 30px auto;
+            margin: 20px auto;
             text-align: center;
             padding: 10px;
             background: #28a745;
@@ -139,92 +124,44 @@ if ($stmt) {
 
 <body>
 
-<div class="container">
+<h2>✅ Loan Inquiries Data (Grid View)</h2>
 
-    <h2>✅ Your Inquiry Submitted Successfully</h2>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>City</th>
+    <th>Loan</th>
+    <th>Amount</th>
+    <th>Tenure</th>
+    <th>Income</th>
+    <th>Aadhaar</th>
+    <th>PAN</th>
+</tr>
 
-    <div class="grid">
+<?php
+while ($row = sqlsrv_fetch_array($getStmt, SQLSRV_FETCH_ASSOC)) {
+    echo "<tr>
+        <td>{$row['InquiryID']}</td>
+        <td>{$row['FullName']}</td>
+        <td>{$row['PhoneNumber']}</td>
+        <td>{$row['Email']}</td>
+        <td>{$row['City']}</td>
+        <td>{$row['LoanType']}</td>
+        <td>{$row['LoanAmount']}</td>
+        <td>{$row['TenureMonths']}</td>
+        <td>{$row['MonthlyIncome']}</td>
+        <td>{$row['AadhaarNumber']}</td>
+        <td>{$row['PANNumber']}</td>
+    </tr>";
+}
+?>
 
-        <div class="card">
-            <div class="label">Full Name</div>
-            <div class="value"><?php echo $userData['FullName']; ?></div>
-        </div>
+</table>
 
-        <div class="card">
-            <div class="label">Phone</div>
-            <div class="value"><?php echo $userData['PhoneNumber']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Email</div>
-            <div class="value"><?php echo $userData['Email']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Address</div>
-            <div class="value"><?php echo $userData['AddressLine']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">City</div>
-            <div class="value"><?php echo $userData['City']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">State</div>
-            <div class="value"><?php echo $userData['State']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Pincode</div>
-            <div class="value"><?php echo $userData['Pincode']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Loan Type</div>
-            <div class="value"><?php echo $userData['LoanType']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Loan Amount</div>
-            <div class="value"><?php echo $userData['LoanAmount']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Tenure</div>
-            <div class="value"><?php echo $userData['TenureMonths']; ?> months</div>
-        </div>
-
-        <div class="card">
-            <div class="label">Employment</div>
-            <div class="value"><?php echo $userData['EmploymentType']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Company</div>
-            <div class="value"><?php echo $userData['CompanyName']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Monthly Income</div>
-            <div class="value"><?php echo $userData['MonthlyIncome']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">Aadhaar</div>
-            <div class="value"><?php echo $userData['AadhaarNumber']; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="label">PAN</div>
-            <div class="value"><?php echo $userData['PANNumber']; ?></div>
-        </div>
-
-    </div>
-
-    <a href="index.html" class="btn">⬅ Back to Form</a>
-
-</div>
+<a href="index.html" class="btn">⬅ Back to Form</a>
 
 </body>
 </html>
