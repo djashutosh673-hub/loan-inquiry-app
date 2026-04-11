@@ -1,4 +1,15 @@
 <?php
+session_start();
+
+// Simple login check
+if (!isset($_SESSION['admin_logged_in'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
+
+<?php
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
