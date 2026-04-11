@@ -59,14 +59,13 @@ $params = [
 
 $stmt = sqlsrv_query($conn, $sql, $params);
 
-if (!$stmt) {
+if ($stmt) {
+    // redirect with Aadhaar (unique identifier)
+    header("Location: user.php?aadhaar=" . urlencode($AadhaarNumber));
+    exit();
+} else {
     die("❌ Insert failed");
 }
-
-// FETCH ALL DATA (LIKE ADMIN GRID)
-$getSql = "SELECT * FROM Inquiries ORDER BY InquiryID DESC";
-$getStmt = sqlsrv_query($conn, $getSql);
-
 ?>
 
 <!DOCTYPE html>
