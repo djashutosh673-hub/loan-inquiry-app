@@ -84,6 +84,8 @@ $stmt = sqlsrv_query($conn, $sql);
     <th>Income</th>
     <th>Aadhaar</th>
     <th>PAN</th>
+    <th>Aadhaar File</th>
+<th>PAN File</th>
 </tr>
 
 <?php
@@ -99,6 +101,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         <td>{$row['MonthlyIncome']}</td>
         <td>{$row['AadhaarNumber']}</td>
         <td>{$row['PANNumber']}</td>
+        <td><a href='uploads/{$row['AadhaarFile']}' target='_blank'>View</a></td>
+<td><a href='uploads/{$row['PANFile']}' target='_blank'>View</a></td>
     </tr>";
 }
 ?>

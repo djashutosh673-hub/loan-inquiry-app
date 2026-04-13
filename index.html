@@ -1,74 +1,106 @@
 <!DOCTYPE html>
-
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Loan Inquiry Form Jaipur</title>
+<meta charset="UTF-8">
+<title>Loan Inquiry Form Jaipur</title>
 
-```
 <style>
-    body {
-        font-family: Arial;
-        background: #f4f4f4;
-    }
-    .form-container {
-        width: 400px;
-        margin: 50px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-    }
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin: 5px 0;
-    }
-    button {
-        background: #28a745;
-        color: white;
-        padding: 10px;
-        border: none;
-        width: 100%;
-    }
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+}
+.form-container {
+    width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+}
+button {
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+}
 </style>
-```
 
 </head>
 
 <body>
 
 <div class="form-container">
-    <h2>Loan Inquiry Form Jaipur</h2>
+<h2>Loan Inquiry Form Jaipur</h2>
 
-```
-<form action="submit.php" method="POST">
+<form action="submit.php" method="POST" enctype="multipart/form-data">
 
-    <input name="FullName" placeholder="Full Name" required>
-    <input name="PhoneNumber" type="tel" placeholder="Phone Number" required>
-    <input name="Email" type="email" placeholder="Email" required>
-    <input name="AddressLine" placeholder="Address" required>
-    <input name="City" placeholder="City" required>
-    <input name="State" placeholder="State" required>
-    <input name="Pincode" type="number" placeholder="Pincode" required>
+<input name="FullName" placeholder="Full Name" required>
+<input name="PhoneNumber" type="tel" placeholder="Phone Number" required>
+<input name="Email" type="email" placeholder="Email" required>
+<input name="AddressLine" placeholder="Address" required>
+<input name="City" placeholder="City" required>
+<input name="State" placeholder="State" required>
+<input name="Pincode" type="number" placeholder="Pincode" required>
 
-    <select name="LoanType">
-        <option>Home Loan</option>
-        <option>Car Loan</option>
-        <option>Personal Loan</option>
-    </select>
+<select name="LoanType" required>
+<option value="">Select Loan Type</option>
+<option>Secured Loan</option>
+<option>HL (Home Loan)</option>
+<option>Mortgage Loan</option>
+<option>Unsecured Loan</option>
+<option>Business Loan</option>
+<option>Personal Loan</option>
+<option>Vehicle Loan</option>
+<option>Education Loan</option>
+<option>CC/OD Limit</option>
+</select>
 
-    <input name="LoanAmount" type="number" placeholder="Loan Amount" required>
-    <input name="TenureMonths" type="number" placeholder="Tenure (months)" required>
-    <input name="EmploymentType" placeholder="Employment Type" required>
-    <input name="CompanyName" placeholder="Company Name" required>
-    <input name="MonthlyIncome" type="number" placeholder="Monthly Income" required>
-    <input name="AadhaarNumber" type="number" placeholder="Aadhaar Number" required>
-    <input name="PANNumber" placeholder="PAN Number" required>
+<h3>Professional Information</h3>
 
-    <button type="submit">Submit</button>
+<select name="ProfileType" required>
+<option value="">Select Profile</option>
+<option>Business Profile</option>
+<option>Salaried Profile</option>
+<option>Cash Salaried Profile</option>
+<option>Non Income Profile</option>
+</select>
+
+<h3>Upload Documents</h3>
+
+<label>Aadhaar Card:</label>
+<input type="file" name="aadhaar_file" required>
+
+<label>PAN Card:</label>
+<input type="file" name="pan_file" required>
+
+<label>Salary Slip:</label>
+<input type="file" name="salary_file">
+
+<label>Bank Statement:</label>
+<input type="file" name="bank_file">
+
+<label>GST Return:</label>
+<input type="file" name="gst_file">
+
+<label>UDYAM Certificate:</label>
+<input type="file" name="udyam_file">
+
+<input name="LoanAmount" type="number" placeholder="Loan Amount" required>
+<input name="TenureMonths" type="number" placeholder="Tenure (months)" required>
+<input name="EmploymentType" placeholder="Employment Type" required>
+<input name="CompanyName" placeholder="Company Name" required>
+<input name="MonthlyIncome" type="number" placeholder="Monthly Income" required>
+<input name="AadhaarNumber" type="number" placeholder="Aadhaar Number" required>
+<input name="PANNumber" placeholder="PAN Number" required>
+
+<button type="submit">Submit</button>
 
 </form>
-```
 
 </div>
 

@@ -37,6 +37,7 @@ $CompanyName = $_POST['CompanyName'];
 $MonthlyIncome = (int)$_POST['MonthlyIncome'];
 $AadhaarNumber = $_POST['AadhaarNumber'];
 $PANNumber = $_POST['PANNumber'];
+$ProfileType = $_POST['ProfileType'];
 
 // CHECK DUPLICATE
 $checkSql = "SELECT * FROM Inquiries WHERE AadhaarNumber = ?";
@@ -46,121 +47,51 @@ if (sqlsrv_has_rows($checkStmt)) {
     die("<h2 style='color:red;text-align:center;'>❌ Aadhaar already exists!</h2>");
 }
 
-// INSERT
+// FILE UPLOAD
+$uploadDir = "uploads/";
+
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
+
+function uploadFile($file, $uploadDir) {
+    if (!empty($file['name'])) {
+        $fileName = time() . "_" . basename($file['name']);
+        $target = $uploadDir . $fileName;
+        move_uploaded_file($file['tmp_name'], $target);
+        return $fileName;
+    }
+    return null;
+}
+
+$aadhaarFile = uploadFile($_FILES['aadhaar_file'], $uploadDir);
+$panFile = uploadFile($_FILES['pan_file'], $uploadDir);
+$salaryFile = uploadFile($_FILES['salary_file'], $uploadDir);
+$bankFile = uploadFile($_FILES['bank_file'], $uploadDir);
+$gstFile = uploadFile($_FILES['gst_file'], $uploadDir);
+$udyamFile = uploadFile($_FILES['udyam_file'], $uploadDir);
+
+// INSERT DATA
 $sql = "INSERT INTO Inquiries
-(FullName, PhoneNumber, Email, AddressLine, City, State, Pincode, LoanType, LoanAmount, TenureMonths, EmploymentType, CompanyName, MonthlyIncome, AadhaarNumber, PANNumber)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+(FullName, PhoneNumber, Email, AddressLine, City, State, Pincode, LoanType, LoanAmount, TenureMonths, EmploymentType, CompanyName, MonthlyIncome, AadhaarNumber, PANNumber, ProfileType, AadhaarFile, PANFile, SalaryFile, BankFile, GSTFile, UdyamFile)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $FullName, $PhoneNumber, $Email, $AddressLine, $City, $State, $Pincode,
     $LoanType, $LoanAmount, $TenureMonths, $EmploymentType,
-    $CompanyName, $MonthlyIncome, $AadhaarNumber, $PANNumber
+    $CompanyName, $MonthlyIncome, $AadhaarNumber, $PANNumber,
+    $ProfileType,
+    $aadhaarFile, $panFile, $salaryFile, $bankFile, $gstFile, $udyamFile
 ];
 
 $stmt = sqlsrv_query($conn, $sql, $params);
 
 if ($stmt) {
-    // redirect with Aadhaar (unique identifier)
+    // SUCCESS → Redirect to user page
     header("Location: user.php?aadhaar=" . urlencode($AadhaarNumber));
     exit();
 } else {
     die("❌ Insert failed");
 }
+
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Loan Inquiries</title>
-
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f4f4;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        table {
-            width: 95%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th {
-            background: #007bff;
-            color: white;
-            padding: 10px;
-        }
-
-        td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        .btn {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            text-align: center;
-            padding: 10px;
-            background: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-    </style>
-
-</head>
-
-<body>
-
-<h2>✅ Loan Inquiries Data (Grid View)</h2>
-
-<table>
-<tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Phone</th>
-    <th>Email</th>
-    <th>City</th>
-    <th>Loan</th>
-    <th>Amount</th>
-    <th>Tenure</th>
-    <th>Income</th>
-    <th>Aadhaar</th>
-    <th>PAN</th>
-</tr>
-
-<?php
-while ($row = sqlsrv_fetch_array($getStmt, SQLSRV_FETCH_ASSOC)) {
-    echo "<tr>
-        <td>{$row['InquiryID']}</td>
-        <td>{$row['FullName']}</td>
-        <td>{$row['PhoneNumber']}</td>
-        <td>{$row['Email']}</td>
-        <td>{$row['City']}</td>
-        <td>{$row['LoanType']}</td>
-        <td>{$row['LoanAmount']}</td>
-        <td>{$row['TenureMonths']}</td>
-        <td>{$row['MonthlyIncome']}</td>
-        <td>{$row['AadhaarNumber']}</td>
-        <td>{$row['PANNumber']}</td>
-    </tr>";
-}
-?>
-
-</table>
-
-<a href="index.html" class="btn">⬅ Back to Form</a>
-
-</body>
-</html>
