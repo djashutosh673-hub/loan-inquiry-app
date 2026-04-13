@@ -106,8 +106,6 @@ function showFile($fileName) {
 <th>Profile</th>
 <th>Aadhaar</th>
 <th>PAN</th>
-<th>Aadhaar File</th>
-<th>PAN File</th>
 <th>Salary</th>
 <th>Bank</th>
 <th>GST</th>
@@ -139,8 +137,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         <td>{$row['ProfileType']}</td>
         <td>{$row['AadhaarNumber']}</td>
         <td>{$row['PANNumber']}</td>
-        <td>" . showFile($row['AadhaarFile']) . "</td>
-        <td>" . showFile($row['PANFile']) . "</td>
         <td>" . showFile($row['SalaryFile']) . "</td>
         <td>" . showFile($row['BankFile']) . "</td>
         <td>" . showFile($row['GSTFile']) . "</td>
