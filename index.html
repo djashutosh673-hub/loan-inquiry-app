@@ -70,26 +70,47 @@ button {
 <option>Non Income Profile</option>
 </select>
 
-<h3>Upload Documents</h3>
+<h3>Applicant Documents</h3>
 
-<label>Aadhaar Card:</label>
-<input type="file" name="aadhaar_file" required>
+<label>Aadhaar (Applicant):</label>
+<input type="file" name="aadhaar_applicant" required>
 
-<label>PAN Card:</label>
-<input type="file" name="pan_file" required>
+<label>PAN (Applicant):</label>
+<input type="file" name="pan_applicant" required>
 
-<label>Salary Slip:</label>
+
+<h3>Co-Applicant Documents</h3>
+
+<label>Aadhaar (Co-Applicant):</label>
+<input type="file" name="aadhaar_coapp">
+
+<label>PAN (Co-Applicant):</label>
+<input type="file" name="pan_coapp">
+
+
+<h3>Income Proof</h3>
+
+<label>Salary Slip (3 months):</label>
 <input type="file" name="salary_file">
 
-<label>Bank Statement:</label>
+<label>ITR + P&L + Balance Sheet:</label>
+<input type="file" name="itr_file">
+
+
+<h3>Financial Documents</h3>
+
+<label>Bank Statement (1 year):</label>
 <input type="file" name="bank_file">
 
-<label>GST Return:</label>
+<label>GST Return (1 year):</label>
 <input type="file" name="gst_file">
 
-<label>UDYAM Certificate:</label>
-<input type="file" name="udyam_file">
 
+<h3>Business Document</h3>
+
+<label>Udyam Certificate:</label>
+
+<input type="file" name="udyam_file">
 <input name="LoanAmount" type="number" placeholder="Loan Amount" required>
 <input name="TenureMonths" type="number" placeholder="Tenure (months)" required>
 <input name="EmploymentType" placeholder="Employment Type" required>

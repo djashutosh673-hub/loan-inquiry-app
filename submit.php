@@ -21,6 +21,23 @@ if (!$conn) {
     die("❌ Connection failed");
 }
 
+// FILE UPLOAD SETUP
+$uploadDir = "uploads/";
+
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
+
+function uploadFile($file, $uploadDir) {
+    if (!empty($file['name'])) {
+        $fileName = time() . "_" . basename($file['name']);
+        $target = $uploadDir . $fileName;
+        move_uploaded_file($file['tmp_name'], $target);
+        return $fileName;
+    }
+    return null;
+}
+
 // GET FORM DATA
 $FullName = $_POST['FullName'];
 $PhoneNumber = $_POST['PhoneNumber'];
@@ -39,6 +56,17 @@ $AadhaarNumber = $_POST['AadhaarNumber'];
 $PANNumber = $_POST['PANNumber'];
 $ProfileType = $_POST['ProfileType'];
 
+// FILES
+$aadhaarApplicant = uploadFile($_FILES['aadhaar_applicant'], $uploadDir);
+$panApplicant = uploadFile($_FILES['pan_applicant'], $uploadDir);
+$aadhaarCoapp = uploadFile($_FILES['aadhaar_coapp'], $uploadDir);
+$panCoapp = uploadFile($_FILES['pan_coapp'], $uploadDir);
+$salaryFile = uploadFile($_FILES['salary_file'], $uploadDir);
+$itrFile = uploadFile($_FILES['itr_file'], $uploadDir);
+$bankFile = uploadFile($_FILES['bank_file'], $uploadDir);
+$gstFile = uploadFile($_FILES['gst_file'], $uploadDir);
+$udyamFile = uploadFile($_FILES['udyam_file'], $uploadDir);
+
 // CHECK DUPLICATE
 $checkSql = "SELECT * FROM Inquiries WHERE AadhaarNumber = ?";
 $checkStmt = sqlsrv_query($conn, $checkSql, [$AadhaarNumber]);
@@ -47,51 +75,29 @@ if (sqlsrv_has_rows($checkStmt)) {
     die("<h2 style='color:red;text-align:center;'>❌ Aadhaar already exists!</h2>");
 }
 
-// FILE UPLOAD
-$uploadDir = "uploads/";
-
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
-
-function uploadFile($file, $uploadDir) {
-    if (!empty($file['name'])) {
-        $fileName = time() . "_" . basename($file['name']);
-        $target = $uploadDir . $fileName;
-        move_uploaded_file($file['tmp_name'], $target);
-        return $fileName;
-    }
-    return null;
-}
-
-$aadhaarFile = uploadFile($_FILES['aadhaar_file'], $uploadDir);
-$panFile = uploadFile($_FILES['pan_file'], $uploadDir);
-$salaryFile = uploadFile($_FILES['salary_file'], $uploadDir);
-$bankFile = uploadFile($_FILES['bank_file'], $uploadDir);
-$gstFile = uploadFile($_FILES['gst_file'], $uploadDir);
-$udyamFile = uploadFile($_FILES['udyam_file'], $uploadDir);
-
-// INSERT DATA
-$sql = "INSERT INTO Inquiries
-(FullName, PhoneNumber, Email, AddressLine, City, State, Pincode, LoanType, LoanAmount, TenureMonths, EmploymentType, CompanyName, MonthlyIncome, AadhaarNumber, PANNumber, ProfileType, AadhaarFile, PANFile, SalaryFile, BankFile, GSTFile, UdyamFile)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// INSERT QUERY (FULL CORRECT)
+$sql = "INSERT INTO Inquiries (
+    FullName, PhoneNumber, Email, AddressLine, City, State, Pincode,
+    LoanType, LoanAmount, TenureMonths, EmploymentType, CompanyName,
+    MonthlyIncome, AadhaarNumber, PANNumber, ProfileType,
+    AadhaarApplicant, PANApplicant, AadhaarCoapp, PANCoapp,
+    SalaryFile, ITRFile, BankFile, GSTFile, UdyamFile
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $FullName, $PhoneNumber, $Email, $AddressLine, $City, $State, $Pincode,
-    $LoanType, $LoanAmount, $TenureMonths, $EmploymentType,
-    $CompanyName, $MonthlyIncome, $AadhaarNumber, $PANNumber,
-    $ProfileType,
-    $aadhaarFile, $panFile, $salaryFile, $bankFile, $gstFile, $udyamFile
+    $LoanType, $LoanAmount, $TenureMonths, $EmploymentType, $CompanyName,
+    $MonthlyIncome, $AadhaarNumber, $PANNumber, $ProfileType,
+    $aadhaarApplicant, $panApplicant, $aadhaarCoapp, $panCoapp,
+    $salaryFile, $itrFile, $bankFile, $gstFile, $udyamFile
 ];
 
 $stmt = sqlsrv_query($conn, $sql, $params);
 
 if ($stmt) {
-    // SUCCESS → Redirect to user page
     header("Location: user.php?aadhaar=" . urlencode($AadhaarNumber));
     exit();
 } else {
     die("❌ Insert failed");
 }
-
 ?>

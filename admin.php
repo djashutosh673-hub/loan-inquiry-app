@@ -112,6 +112,11 @@ function showFile($fileName) {
 <th>Bank</th>
 <th>GST</th>
 <th>Udyam</th>
+<th>Applicant Aadhaar</th>
+<th>Applicant PAN</th>
+<th>Co-Aadhaar</th>
+<th>Co-PAN</th>
+<th>ITR</th>
 </tr>
 
 <?php
@@ -140,6 +145,11 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         <td>" . showFile($row['BankFile']) . "</td>
         <td>" . showFile($row['GSTFile']) . "</td>
         <td>" . showFile($row['UdyamFile']) . "</td>
+        <td>" . showFile($row['AadhaarApplicant']) . "</td>
+<td>" . showFile($row['PANApplicant']) . "</td>
+<td>" . showFile($row['AadhaarCoapp']) . "</td>
+<td>" . showFile($row['PANCoapp']) . "</td>
+<td>" . showFile($row['ITRFile']) . "</td>
     </tr>";
 }
 ?>
